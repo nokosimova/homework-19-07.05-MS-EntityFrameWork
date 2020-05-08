@@ -51,12 +51,74 @@ namespace ConsoleApp1
             }
         }
         public static void Show()
-        { }
+        {
+            try
+            {
+                using (var context = new NewDBContext())
+                {
+                    var markList = context.MarkList.ToList();
+                    var studList = context.StudentList.ToList();
+                    var courseList = context.CourseList.ToList();
+                    Console.WriteLine(" id |             FIO               | Subject  |  Mark |");
+                    Console.WriteLine("--------------------------------------------------------");
+                    studList.ForEach(s =>
+                    {
+                        markList.ForEach(m =>
+                        {                            
+                            if (s.StudentId == m.StudentId)
+                            {
+                                var coursename = context.CourseList.Find(m.CourseId).CourseName;
+                                Console.WriteLine($"{m.MarkId}  |{s.FirstName} {s.LastName}           |{coursename}   | {m.Point}  |");
+                            }
+                        });
+                    });
+                }
+            }
+            catch(Exception x)
+            {
+                Console.WriteLine($"Fail:{x.Message}");
+            }
+            finally
+            { }
+        }
+        /*
+                    companyList.ForEach(p =>
+
+                    {
+
+                        Console.WriteLine($"ID:{p.Id}\tCompanyName:{p.CompanyName}");
+
+                    });
+
+                }
+
+            }
+
+            catch (Exception ex)
+
+            {
+
+                FailMessage(ex.Message);
+
+            }
+
+            finally
+
+            {
+
+                if (type != "update")
+
+                {
+
+                    ConsoleReadWithPressKeyMessage();
+
+                }*/
         public static void AddData()
         { }
         public static void UpdateData()
         { }
         public static void DeleteData()
         { }
+
     }
 }

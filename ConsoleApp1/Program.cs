@@ -50,7 +50,7 @@ namespace ConsoleApp1
 
             }
         }
-        public static void Show()
+        public static void Show(object mess = null)
         {
             try
             {
@@ -80,8 +80,11 @@ namespace ConsoleApp1
             }
             finally
             {
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey();
+                if (mess == null)
+                {
+                    Console.WriteLine("Press any key to continue...");
+                    Console.ReadKey();
+                }
             }
         }
         public static void ShowStudentIdAndName()
@@ -147,30 +150,35 @@ namespace ConsoleApp1
             {
                 using (var context = new NewDBContext())
                 {
-                    Show();
+                    Show("tochange");
                     Console.WriteLine("Choose ID to update");
                     var markId = int.Parse(Console.ReadLine());
                     var row = context.MarkList.Find(markId);
                     if (row != null)
-                    {
-                        ShowStudentIdAndName();
-                        Console.WriteLine("Write new STUDENT ID or press ENTER to continue");
-                        Console.Write("new ID: ");
-                        int? studId = int.Parse(Console.ReadLine());
-
-                        ShowCourseIdAndName();
-                        Console.WriteLine("Write new COURSE ID or press ENTER to continue");
-                        Console.Write("new ID:");
-                        int? courseId = int.Parse(Console.ReadLine());
-
-                        Console.WriteLine("Choose new mark from 2-4 or press ENTER to continue");
-                        Console.Write("new mark: ");
-                        int? point = int.Parse(Console.ReadLine());
-
-                        row.StudentId = (studId != null) ? studId : row.StudentId;
-                        row.CourseId = (courseId != null) ? courseId : row.CourseId;
-                        row.Point = (point != null) ? point : row.Point;
-                        
+                    {                        
+                        Console.WriteLine("Would you like to change student name? (Y(yes)/N(no))");
+                        if ((Console.ReadLine()).ToUpper() == "Y")
+                        {
+                            ShowStudentIdAndName();
+                            Console.Write("new ID: ");
+                            var studId = int.Parse(Console.ReadLine());
+                            row.StudentId = studId;
+                        }                        
+                        Console.WriteLine("Would you like to change course? (Y(yes)/N(no))");
+                        if ((Console.ReadLine()).ToUpper() == "Y")
+                        {
+                            ShowCourseIdAndName();
+                            Console.Write("new course ID: ");
+                            var courseId = int.Parse(Console.ReadLine());
+                            row.CourseId = courseId;
+                        }
+                        Console.WriteLine("Would you like to change mark? (Y(yes)/N(no))");                        
+                        if ((Console.ReadLine()).ToUpper() == "Y")
+                        {
+                            Console.Write("new mark from 2-4: ");
+                            var point = int.Parse(Console.ReadLine());
+                            row.Point = point;
+                        }                        
                         if (context.SaveChanges() > 0)
                             Console.WriteLine("Data was successfully updated!");
                         else
@@ -196,7 +204,7 @@ namespace ConsoleApp1
             {
                 using (var context = new NewDBContext())
                 {
-                    Show();
+                    Show("tochange");
                     Console.Write("Choose ID to delete:");
                     var markId = int.Parse(Console.ReadLine());
                     var row = context.MarkList.Find(markId);

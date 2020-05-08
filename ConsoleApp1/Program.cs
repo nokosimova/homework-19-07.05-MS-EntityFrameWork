@@ -36,7 +36,7 @@ namespace ConsoleApp1
                         AddData();
                         break;
                     case 3:
-                        //      UpdateData();
+                        UpdateData();
                         break;
                     case 4:
                         //    DeleteData();
@@ -105,35 +105,81 @@ namespace ConsoleApp1
         }
         public static void AddData()
         {
-            using (var context = new NewDBContext())
+            try
             {
-                Console.WriteLine("Choose Student id: ");
-                ShowStudentIdAndName();
-                var studId = int.Parse(Console.ReadLine());
-
-                Console.WriteLine("Choose Course id: ");
-                ShowCourseIdAndName();
-                var courseId = int.Parse(Console.ReadLine());
-
-                Console.WriteLine("Choose mark from 2-4:");
-                var point = int.Parse(Console.ReadLine());
-
-                MarkList newMark = new MarkList()
+                using (var context = new NewDBContext())
                 {
-                    StudentId = studId,
-                    CourseId = courseId,
-                    Point = point
-                };
-                context.MarkList.Add(newMark);                               
-                var result = context.SaveChanges();
-                if (result > 0) Console.WriteLine("New data was successfully added!");                
+                    Console.WriteLine("Choose Student id: ");
+                    ShowStudentIdAndName();
+                    var studId = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Choose Course id: ");
+                    ShowCourseIdAndName();
+                    var courseId = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine("Choose mark from 2-4:");
+                    var point = int.Parse(Console.ReadLine());
+
+                    MarkList newMark = new MarkList()
+                    {
+                        StudentId = studId,
+                        CourseId = courseId,
+                        Point = point
+                    };
+                    context.MarkList.Add(newMark);
+                    var result = context.SaveChanges();
+                    if (result > 0) Console.WriteLine("New data was successfully added!");
+                }
+            }
+            catch(Exception x)
+            {
+                Console.WriteLine($"Fail:{x.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
             }
         }
+        public static void UpdateData()
+        {
+
+        }
+        public static void DeleteData()
+        {
+            try
+            {
+                using (var context = new NewDBContext())
+                {
+                    Show();
+                    Console.Write("Choose ID to delete:");
+                    var markId = int.Parse(Console.ReadLine());
+                    var row = context.MarkList.Find(markId);
+                    if (row != null)
+                    {
+                        Console.Write("Are you sure? Y(yes)/N(no):");
+                        var confirm = Console.ReadLine();
+                        if (confirm.ToUpper() == "Y") context.MarkList.Remove(row);
+                        if (context.SaveChanges() > 0)
+                            Console.WriteLine("Data was successfully deleted!");
+                        else
+                            Console.WriteLine("Fail! Data wasn't deleted!");
+                    }
+                    else
+                        Console.WriteLine("Wrong mark ID!");                    
+                }
+            }
+            catch (Exception x)
+            {
+                Console.WriteLine($"Fail:{x.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+            }
+
+        }
+
     }
 }
-
-      /*  public static void UpdateData()
-        { }
-        public static void DeleteData()
-        { }
-        */

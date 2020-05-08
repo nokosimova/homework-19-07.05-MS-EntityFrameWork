@@ -18,7 +18,8 @@ namespace ConsoleApp1
             bool act = true;
             while (act)
             {
-                Thread.Sleep(1000);
+                Console.Clear();
+                //Thread.Sleep(1000);
                 Console.WriteLine("Choose command to table MarkList:");
                 Console.WriteLine("1 - Show table");
                 Console.WriteLine("2 - Add data");

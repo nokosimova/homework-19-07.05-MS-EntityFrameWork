@@ -16,9 +16,9 @@ namespace ConsoleApp1
         static void Main(string[] args)
         {
             bool act = true;
-            while(act)
+            while (act)
             {
-                Thread.Sleep(1000); 
+                Thread.Sleep(1000);
                 Console.WriteLine("Choose command to table MarkList:");
                 Console.WriteLine("1 - Show table");
                 Console.WriteLine("2 - Add data");
@@ -27,7 +27,7 @@ namespace ConsoleApp1
                 Console.WriteLine("5 - Exit");
                 var command = int.Parse(Console.ReadLine());
 
-                switch(command)
+                switch (command)
                 {
                     case 1:
                         Show();
@@ -36,10 +36,10 @@ namespace ConsoleApp1
                         AddData();
                         break;
                     case 3:
-                        UpdateData();
+                        //      UpdateData();
                         break;
                     case 4:
-                        DeleteData();
+                        //    DeleteData();
                         break;
                     case 5:
                         act = false;
@@ -64,7 +64,7 @@ namespace ConsoleApp1
                     studList.ForEach(s =>
                     {
                         markList.ForEach(m =>
-                        {                            
+                        {
                             if (s.StudentId == m.StudentId)
                             {
                                 var coursename = context.CourseList.Find(m.CourseId).CourseName;
@@ -74,51 +74,66 @@ namespace ConsoleApp1
                     });
                 }
             }
-            catch(Exception x)
+            catch (Exception x)
             {
                 Console.WriteLine($"Fail:{x.Message}");
             }
             finally
-            { }
+            {
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+            }
         }
-        /*
-                    companyList.ForEach(p =>
-
-                    {
-
-                        Console.WriteLine($"ID:{p.Id}\tCompanyName:{p.CompanyName}");
-
-                    });
-
-                }
-
-            }
-
-            catch (Exception ex)
-
+        public static void ShowStudentIdAndName()
+        {
+            using (var context = new NewDBContext())
             {
-
-                FailMessage(ex.Message);
-
+                var studList = context.StudentList.ToList();
+                Console.WriteLine("id  |               FIO            |");
+                studList.ForEach(s => { Console.WriteLine($"{s.StudentId} |{s.FirstName} {s.LastName}    "); });
             }
+        }
 
-            finally
-
+        public static void ShowCourseIdAndName()
+        {
+            using (var context = new NewDBContext())
             {
-
-                if (type != "update")
-
-                {
-
-                    ConsoleReadWithPressKeyMessage();
-
-                }*/
+                var courseList = context.CourseList.ToList();
+                Console.WriteLine("id  |  Course name  |");
+                courseList.ForEach(c => { Console.WriteLine($"{c.CourseId} |{c.CourseName}      "); });
+            }
+        }
         public static void AddData()
-        { }
-        public static void UpdateData()
+        {
+            using (var context = new NewDBContext())
+            {
+                Console.WriteLine("Choose Student id: ");
+                ShowStudentIdAndName();
+                var studId = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Choose Course id: ");
+                ShowCourseIdAndName();
+                var courseId = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Choose mark from 2-4:");
+                var point = int.Parse(Console.ReadLine());
+
+                MarkList newMark = new MarkList()
+                {
+                    StudentId = studId,
+                    CourseId = courseId,
+                    Point = point
+                };
+                context.MarkList.Add(newMark);                               
+                var result = context.SaveChanges();
+                if (result > 0) Console.WriteLine("New data was successfully added!");                
+            }
+        }
+    }
+}
+
+      /*  public static void UpdateData()
         { }
         public static void DeleteData()
         { }
-
-    }
-}
+        */

@@ -39,7 +39,7 @@ namespace ConsoleApp1
                         UpdateData();
                         break;
                     case 4:
-                        //    DeleteData();
+                        DeleteData();
                         break;
                     case 5:
                         act = false;
@@ -143,7 +143,52 @@ namespace ConsoleApp1
         }
         public static void UpdateData()
         {
+            try
+            {
+                using (var context = new NewDBContext())
+                {
+                    Show();
+                    Console.WriteLine("Choose ID to update");
+                    var markId = int.Parse(Console.ReadLine());
+                    var row = context.MarkList.Find(markId);
+                    if (row != null)
+                    {
+                        ShowStudentIdAndName();
+                        Console.WriteLine("Write new STUDENT ID or press ENTER to continue");
+                        Console.Write("new ID: ");
+                        int? studId = int.Parse(Console.ReadLine());
 
+                        ShowCourseIdAndName();
+                        Console.WriteLine("Write new COURSE ID or press ENTER to continue");
+                        Console.Write("new ID:");
+                        int? courseId = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("Choose new mark from 2-4 or press ENTER to continue");
+                        Console.Write("new mark: ");
+                        int? point = int.Parse(Console.ReadLine());
+
+                        row.StudentId = (studId != null) ? studId : row.StudentId;
+                        row.CourseId = (courseId != null) ? courseId : row.CourseId;
+                        row.Point = (point != null) ? point : row.Point;
+                        
+                        if (context.SaveChanges() > 0)
+                            Console.WriteLine("Data was successfully updated!");
+                        else
+                            Console.WriteLine("Fail! Data wasn't updated!");
+                    }
+                    else
+                        Console.WriteLine("Wrong mark ID!");
+                }
+            }
+            catch (Exception x)
+            {
+                Console.WriteLine($"Fail:{x.Message}");
+            }
+            finally
+            {
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+            }
         }
         public static void DeleteData()
         {
